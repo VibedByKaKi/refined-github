@@ -18,7 +18,7 @@ jobs:
           node-version-file: package.json
           cache: npm
       - run: npm ci
-      - run: npm run build:userscript
+      - run: npm run userscript
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
       # `archive: false` uploads the file as is, instead of inside a ZIP
