@@ -1,0 +1,38 @@
+name: Userscript
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: package.json
+          cache: npm
+      - run: npm ci
+      - run: npm run build:userscript
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+      # `archive: false` uploads the file as is, instead of inside a ZIP
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          path: distribution-userscript/refined-github.user.js
+          archive: false
+      - name: Publish to the "userscript" release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FILE=distribution-userscript/refined-github.user.js
+          if ! gh release view userscript >/dev/null 2>&1; then
+            gh release create userscript --target "$GITHUB_SHA" --title "Userscript" \
+              --notes "Latest userscript build of the \`dev\` branch. The install URL is stable."
+          fi
+          gh release upload userscript "$FILE" --clobber
