@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - dev
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -27,6 +28,7 @@ jobs:
           path: distribution-userscript/refined-github.user.js
           archive: false
       - name: Publish to the "userscript" release
+        if: github.event_name != 'pull_request'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
