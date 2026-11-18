@@ -1,6 +1,7 @@
 node_modules
 yarn.lock
 distribution
+distribution-userscript
 test/web-ext-profile
 !test/web-ext-profile/.gitkeep
 .cache
