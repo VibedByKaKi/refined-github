@@ -1,9 +1,11 @@
+/* eslint-disable jsdoc/imports-as-dependencies -- False positive */
 import {execFileSync} from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import process from 'node:process';
 import {pathToFileURL} from 'node:url';
-import {build} from 'tsdown';
 import svelte from 'rollup-plugin-svelte';
+import {build} from 'tsdown';
 
 import svelteConfig from '../../svelte.config.js';
 
@@ -46,9 +48,7 @@ const importMetaUrl = {
 	name: 'import-meta-url',
 	transform: {
 		filter: {code: 'import.meta.url'},
-		handler(code, id) {
-			return code.replaceAll('import.meta.url', JSON.stringify(pathToFileURL(id).href));
-		},
+		handler: (code, id) => code.replaceAll('import.meta.url', JSON.stringify(pathToFileURL(id).href)),
 	},
 };
 
